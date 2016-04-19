@@ -24,13 +24,14 @@
             android:layout_marginTop="@dimen/activity_vertical_margin"
             app:padding_btw_images="2dp" />
 
-        <com.amagda.android.sample.CircularGridImageView
-            android:id="@+id/circular_images_count_1"
+        <com.amagda.android.sample.GridImageView
+            android:id="@+id/circle_images_count_1"
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:layout_marginTop="@dimen/activity_vertical_margin"
-            app:padding_btw_images="2dp" />
+            app:padding_btw_images="2dp"
+            app:shape_mode="circle" />
 
         <com.amagda.android.sample.GridImageView
             android:id="@+id/rectangle_images_count_2"
@@ -40,13 +41,14 @@
             android:layout_marginTop="@dimen/activity_vertical_margin"
             app:padding_btw_images="2dp" />
 
-        <com.amagda.android.sample.CircularGridImageView
-            android:id="@+id/circular_images_count_2"
+        <com.amagda.android.sample.GridImageView
+            android:id="@+id/circle_images_count_2"
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:layout_marginTop="@dimen/activity_vertical_margin"
-            app:padding_btw_images="2dp" />
+            app:padding_btw_images="2dp"
+            app:shape_mode="circle" />
 
         <com.amagda.android.sample.GridImageView
             android:id="@+id/rectangle_images_count_3"
@@ -56,13 +58,14 @@
             android:layout_marginTop="@dimen/activity_vertical_margin"
             app:padding_btw_images="2dp" />
 
-        <com.amagda.android.sample.CircularGridImageView
-            android:id="@+id/circular_images_count_3"
+        <com.amagda.android.sample.GridImageView
+            android:id="@+id/circle_images_count_3"
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:layout_marginTop="@dimen/activity_vertical_margin"
-            app:padding_btw_images="2dp" />
+            app:padding_btw_images="2dp"
+            app:shape_mode="circle" />
 
         <com.amagda.android.sample.GridImageView
             android:id="@+id/rectangle_images_count_4"
@@ -72,12 +75,11 @@
             android:layout_marginTop="@dimen/activity_vertical_margin"
             app:padding_btw_images="2dp" />
 
-        <com.amagda.android.sample.CircularGridImageView
-            android:id="@+id/circular_images_count_4"
+        <com.amagda.android.sample.GridImageView
+            android:id="@+id/circle_images_count_4"
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            app:padding_btw_images="2dp" />
+            android:layout_marginTop="@dimen/activity_vertical_margin"/>
     </LinearLayout>
 </ScrollView>

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -14,8 +15,9 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 /**
- * Displays set of an arbitrary image resources as grid into the rectangle shape.
- * Image loading processes based on the third party library Picasso
+ * Displays set of an arbitrary image resources
+ * as a grid into the rectangle or circle shape.
+ * Image loading based on the third party library Picasso
  * (http://square.github.io/picasso/)
  */
 public class GridImageView extends ImageView {
@@ -24,6 +26,16 @@ public class GridImageView extends ImageView {
      * Max available images count for displaying
      */
     private static final int MAX_IMG_COUNT = 4;
+
+    /**
+     * Mode for displaying result into the rectangle shape
+     */
+    public static final int RECTANGLE_SHAPE_MODE = 0;
+
+    /**
+     * Mode for displaying result into the circle shape
+     */
+    public static final int CIRCLE_SHAPE_MODE = 1;
 
     /**
      * Rectangle with specific coordinates for the single image
@@ -80,10 +92,22 @@ public class GridImageView extends ImageView {
     private Rect leftRectForClipping;
 
     /**
+     * Path for clipping result into the circle shape
+     */
+    private Path circlePathForClipping;
+
+    /**
      * Padding between images. You can customize this property
-     * into layout via {@code padding_btw_images} attribute
+     * into layout via attribute {@code padding_btw_images}
      */
     private int paddingBtwImages;
+
+    /**
+     * Mode for displaying result into the specific shape.
+     * Available modes are {@link #RECTANGLE_SHAPE_MODE} and {@link #CIRCLE_SHAPE_MODE}.
+     * You can customize this property into layout via attribute {@code shape_mode}
+     */
+    private int shapeMode;
 
     /**
      * Array of image paths required for loading and displaying.
@@ -117,15 +141,41 @@ public class GridImageView extends ImageView {
 
     public GridImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.CircularGridImageView, 0, 0);
+        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.GridImageView, 0, 0);
         try {
-            paddingBtwImages = a.getDimensionPixelOffset(R.styleable.CircularGridImageView_padding_btw_images, 0);
-            if (paddingBtwImages > 0) {
-                paddingBtwImages /= 2;
-            }
+            shapeMode = a.getInt(R.styleable.GridImageView_shape_mode, RECTANGLE_SHAPE_MODE);
+            paddingBtwImages = a.getDimensionPixelOffset(R.styleable.GridImageView_padding_btw_images, 0);
+            setPaddingBetweenImages(paddingBtwImages);
         } finally {
             a.recycle();
         }
+    }
+
+    /**
+     * Sets the padding between images
+     *
+     * @param paddingBtwImages padding in pixels
+     * @attr ref com.amagda.android.sample.R.styleable#GridImageView_padding_btw_images
+     */
+    public void setPaddingBetweenImages(int paddingBtwImages) {
+        if (paddingBtwImages < 0) {
+            throw new IllegalArgumentException("Padding between images should be >=0");
+        }
+        this.paddingBtwImages = paddingBtwImages > 0 ? paddingBtwImages / 2 : 0;
+    }
+
+    /**
+     * Sets mode for displaying result into the specific shape
+     *
+     * @param shapeMode {@link #RECTANGLE_SHAPE_MODE} or {@link #CIRCLE_SHAPE_MODE}
+     * @attr ref com.amagda.android.sample.R.styleable#GridImageView_shape_mode
+     */
+    public void setShapeMode(int shapeMode) {
+        if (shapeMode != CIRCLE_SHAPE_MODE & shapeMode != RECTANGLE_SHAPE_MODE) {
+            throw new IllegalArgumentException("Not supported shape mode. " +
+                    "Use GridImageView.RECTANGLE_SHAPE_MODE or GridImageView.CIRCLE_SHAPE_MODE");
+        }
+        this.shapeMode = shapeMode;
     }
 
     @Override
@@ -164,7 +214,7 @@ public class GridImageView extends ImageView {
      *                   android resource (prefixed with {@code android.resource:}
      */
     public void setImagePaths(String... imagePaths) {
-        invalidateImageLoadingListeners();
+        invalidateImageLoaders();
         invalidateImageBitmaps();
         invalidateImagePaths();
         super.setImageDrawable(null);
@@ -192,6 +242,7 @@ public class GridImageView extends ImageView {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (hasDataForDrawing()) {
+            clipToRequiredShape(canvas);
             if (imgBitmaps.length == 1) {
                 drawAtCenter(canvas, imgBitmaps[0]);
             } else if (imgBitmaps.length == 2) {
@@ -212,6 +263,12 @@ public class GridImageView extends ImageView {
 
     private boolean hasDataForDrawing() {
         return imgBitmaps != null && imgBitmaps.length > 0;
+    }
+
+    private void clipToRequiredShape(Canvas canvas) {
+        if (shapeMode == CIRCLE_SHAPE_MODE) {
+            canvas.clipPath(getCirclePathForClipping());
+        }
     }
 
     /**
@@ -403,6 +460,21 @@ public class GridImageView extends ImageView {
         return rightRectForClipping;
     }
 
+    /**
+     * Gets path for clipping image result into the circular shape
+     */
+    private Path getCirclePathForClipping() {
+        if (circlePathForClipping == null) {
+            circlePathForClipping = new Path();
+            circlePathForClipping.addCircle(
+                    (float) ((getWidth() / 2)),
+                    (float) ((getHeight() / 2)),
+                    (float) ((getWidth() - getPaddingLeft() - getPaddingRight()) / 2),
+                    Path.Direction.CW);
+        }
+        return circlePathForClipping;
+    }
+
 
     //----------IMAGE LOADING----------//
 
@@ -465,7 +537,7 @@ public class GridImageView extends ImageView {
      * Cancels all active image loading processes and
      * invalidates image loading listeners
      */
-    private void invalidateImageLoadingListeners() {
+    private void invalidateImageLoaders() {
         if (imgLoadingListeners != null) {
             for (Target listener : imgLoadingListeners) {
                 Picasso.with(getContext()).cancelRequest(listener);
@@ -488,5 +560,6 @@ public class GridImageView extends ImageView {
         rightBottomRect = null;
         leftRectForClipping = null;
         rightRectForClipping = null;
+        circlePathForClipping = null;
     }
 }
