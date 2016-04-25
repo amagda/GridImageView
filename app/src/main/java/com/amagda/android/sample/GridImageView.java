@@ -143,9 +143,8 @@ public class GridImageView extends ImageView {
         super(context, attrs, defStyleAttr);
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.GridImageView, 0, 0);
         try {
-            shapeMode = a.getInt(R.styleable.GridImageView_shape_mode, RECTANGLE_SHAPE_MODE);
-            paddingBtwImages = a.getDimensionPixelOffset(R.styleable.GridImageView_padding_btw_images, 0);
-            setPaddingBetweenImages(paddingBtwImages);
+            setShapeMode(a.getInt(R.styleable.GridImageView_shape_mode, RECTANGLE_SHAPE_MODE));
+            setPaddingBetweenImages(a.getDimensionPixelOffset(R.styleable.GridImageView_padding_btw_images, 0));
         } finally {
             a.recycle();
         }
@@ -364,10 +363,8 @@ public class GridImageView extends ImageView {
      */
     private Rect getLeftRect() {
         if (leftRect == null) {
-            leftRect = new Rect(
-                    -getWidth() / 2 + getPaddingLeft() - paddingBtwImages, getPaddingTop(),
-                    getWidth() / 2 + getPaddingRight() - paddingBtwImages, getHeight() - getPaddingBottom());
-            leftRect.offset(getWidth() / 4 - paddingBtwImages, 0);
+            leftRect = new Rect(getPaddingLeft(), getPaddingTop(), getWidth() - getPaddingRight(), getHeight() - getPaddingBottom());
+            leftRect.offset(-getWidth() / 4, 0);
         }
         return leftRect;
     }
@@ -378,10 +375,8 @@ public class GridImageView extends ImageView {
      */
     private Rect getRightRect() {
         if (rightRect == null) {
-            rightRect = new Rect(
-                    getWidth() / 2 + getPaddingLeft() + paddingBtwImages, getPaddingTop(),
-                    (getWidth() + getWidth() / 2) - getPaddingRight() + paddingBtwImages, getHeight() - getPaddingBottom());
-            rightRect.offset(-getWidth() / 4 + paddingBtwImages, 0);
+            rightRect = new Rect(getPaddingLeft(), getPaddingTop(), getWidth() - getPaddingRight(), getHeight() - getPaddingBottom());
+            rightRect.offset(getWidth() / 4, 0);
         }
         return rightRect;
     }
@@ -392,9 +387,7 @@ public class GridImageView extends ImageView {
      */
     private Rect getLeftTopRect() {
         if (leftTopRect == null) {
-            leftTopRect = new Rect(
-                    getPaddingLeft() - paddingBtwImages, getPaddingTop() - paddingBtwImages,
-                    getWidth() / 2 - paddingBtwImages, getHeight() / 2 - paddingBtwImages);
+            leftTopRect = new Rect(getPaddingLeft(), getPaddingTop(), getWidth() / 2 - paddingBtwImages, getHeight() / 2 - paddingBtwImages);
         }
         return leftTopRect;
     }
@@ -405,9 +398,7 @@ public class GridImageView extends ImageView {
      */
     private Rect getLeftBottomRect() {
         if (leftBottomRect == null) {
-            leftBottomRect = new Rect(
-                    getPaddingLeft() - paddingBtwImages, getHeight() / 2 + paddingBtwImages,
-                    getWidth() / 2 - paddingBtwImages, getHeight() - getPaddingBottom() + paddingBtwImages);
+            leftBottomRect = new Rect(getPaddingLeft(), getHeight() / 2 + paddingBtwImages, getWidth() / 2 - paddingBtwImages, getHeight() - getPaddingBottom());
         }
         return leftBottomRect;
     }
@@ -418,9 +409,7 @@ public class GridImageView extends ImageView {
      */
     private Rect getRightTopRect() {
         if (rightTopRect == null) {
-            rightTopRect = new Rect(
-                    getWidth() / 2 + paddingBtwImages, getPaddingTop() - paddingBtwImages,
-                    getWidth() - getPaddingRight() + paddingBtwImages, getHeight() / 2 - paddingBtwImages);
+            rightTopRect = new Rect(getWidth() / 2 + paddingBtwImages, getPaddingTop(), getWidth() - getPaddingRight(), getHeight() / 2 - paddingBtwImages);
         }
         return rightTopRect;
     }
@@ -431,9 +420,7 @@ public class GridImageView extends ImageView {
      */
     private Rect getRightBottomRect() {
         if (rightBottomRect == null) {
-            rightBottomRect = new Rect(
-                    getWidth() / 2 + paddingBtwImages, getHeight() / 2 + paddingBtwImages,
-                    getWidth() - getPaddingRight() + paddingBtwImages, getHeight() - getPaddingBottom() + paddingBtwImages);
+            rightBottomRect = new Rect(getWidth() / 2 + paddingBtwImages, getHeight() / 2 + paddingBtwImages, getWidth() - getPaddingRight(), getHeight() - getPaddingBottom());
         }
         return rightBottomRect;
     }
@@ -444,7 +431,7 @@ public class GridImageView extends ImageView {
      */
     private Rect getLeftRectForClipping() {
         if (leftRectForClipping == null) {
-            leftRectForClipping = new Rect(0, 0, getWidth() / 2 - paddingBtwImages, getHeight());
+            leftRectForClipping = new Rect(getPaddingLeft(), getPaddingTop(), getWidth() / 2 - paddingBtwImages, getHeight() - getPaddingBottom());
         }
         return leftRectForClipping;
     }
@@ -455,7 +442,7 @@ public class GridImageView extends ImageView {
      */
     private Rect getRightRectForClipping() {
         if (rightRectForClipping == null) {
-            rightRectForClipping = new Rect(getWidth() / 2 + paddingBtwImages, 0, getWidth(), getHeight());
+            rightRectForClipping = new Rect(getWidth() / 2 + paddingBtwImages, getPaddingTop(), getWidth() - getPaddingRight(), getHeight() - getPaddingBottom());
         }
         return rightRectForClipping;
     }
