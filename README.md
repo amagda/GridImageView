@@ -18,12 +18,12 @@ Image loading based on the third party library [Picasso](http://square.github.io
             app:padding_btw_images="2dp"
             app:shape_mode="circle" />
 ```
-#####Properties
+##### Properties
 You may use the following properties in your XML to customize your GridImageView.
 * `app:padding_btw_images` (dimension) -> default 0dp
 * `app:shape_mode` (rectangle or circle) -> default rectangle
 
-###Java
+### Java
 ```java
 GridImageView gridImageView = (GridImageView) findViewById(R.id.grid_image_view);
 gridImageView.setPaddingBetweenImages(getResources().getDimensionPixelOffset(R.dimen.padding_btw_images));
